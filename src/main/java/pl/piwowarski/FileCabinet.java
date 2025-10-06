@@ -1,5 +1,6 @@
 package pl.piwowarski;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,4 +51,14 @@ class FileCabinet implements Cabinet {
                 .sum();
     }
 
+    private List<Folder> getSubtreeFolders(Folder folder) {
+        List<Folder> all = new ArrayList<>();
+        all.add(folder);
+        if (folder instanceof MultiFolder) {
+            for (Folder sub : ((MultiFolder) folder).getFolders()) {
+                all.addAll(getSubtreeFolders(sub));
+            }
+        }
+        return all;
+    }
 }
