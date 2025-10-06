@@ -42,4 +42,12 @@ class FileCabinet implements Cabinet {
                 .toList();
     }
 
+    @Override
+    public int count() {
+        return folders.stream()
+                .flatMap(folder -> getSubtreeFolders(folder).stream())
+                .mapToInt(countingFolder -> 1)
+                .sum();
+    }
+
 }
