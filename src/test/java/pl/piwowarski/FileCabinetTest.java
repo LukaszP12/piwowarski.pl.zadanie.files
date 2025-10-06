@@ -1,0 +1,125 @@
+package pl.piwowarski;
+
+
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class FileCabinetTest {
+
+    @Test
+    void findFolderByName_an_exisiting_folder() {
+        // given
+        Folder file1 = new SingleFileFolder("File1", "SMALL");
+        Folder file2 = new SingleFileFolder("File2", "MEDIUM");
+
+        FileCabinet fileCabinet = new FileCabinet(List.of(file1, file2));
+        // when
+        Optional<Folder> retrievedFile = fileCabinet.findFolderByName("File1");
+
+        // then
+        assertTrue(retrievedFile.isPresent());
+        assertEquals("File1", retrievedFile.get().getName());
+    }
+
+    @Test
+    void findFolderByName_a_nonExistingFolder() {
+        // given
+        SingleFileFolder singleFileFolder = new SingleFileFolder("dummyFile1", "SMALL");
+        FileCabinet fileCabinet = new FileCabinet(List.of(singleFileFolder));
+
+        // when
+        Optional<Folder> notPresent = fileCabinet.findFolderByName("NonExistent");
+
+        // then
+        assertTrue(notPresent.isEmpty());
+    }
+
+    @Test
+    void find_folder_of_small_size() {
+        // given
+        Folder file1 = new SingleFileFolder("dummyFile1", "SMALL");
+        Folder file2 = new SingleFileFolder("dummyFile2", "MEDIUM");
+        MultiFileFolder multiFileFolder = new MultiFileFolder("dummyMultiFileFolder1", "LARGE", List.of(file1, file2));
+        FileCabinet fileCabinet = new FileCabinet(List.of(multiFileFolder));
+
+        // when
+        List<Folder> allSmallFolders = fileCabinet.findFoldersBySize("SMALL");
+
+        // then
+        assertEquals(1, allSmallFolders.size());
+        assertEquals("dummyFile1", allSmallFolders.get(0).getName());
+    }
+
+    @Test
+    void find_aMultiFolder_By_Size_Polymorphic() {
+        // given
+        Folder file1 = new SingleFileFolder("dummyFile1", "SMALL");
+        Folder file2 = new SingleFileFolder("dummyFile2", "MEDIUM");
+        MultiFileFolder multiFileFolder = new MultiFileFolder("dummyFolder1", "LARGE", List.of(file1, file2));
+        FileCabinet fileCabinet = new FileCabinet(List.of(multiFileFolder));
+
+        // when
+        List<Folder> largeSizeFolders = fileCabinet.findFoldersBySize("LARGE");
+        assertEquals(1, largeSizeFolders.size());
+        assertEquals("dummyFolder1", largeSizeFolders.get(0).getName());
+    }
+
+    @Test
+    void test_counting_folders_all_single_file_folders() {
+        // given
+        Folder file1 = new SingleFileFolder("dummyFile1", "SMALL");
+        Folder file2 = new SingleFileFolder("dummyFile2", "MEDIUM");
+        Folder file3 = new SingleFileFolder("dummyFile2", "MEDIUM");
+        Folder file4 = new SingleFileFolder("dummyFile2", "LARGE");
+
+        FileCabinet fileCabinet = new FileCabinet(List.of(file1, file2, file3, file4));
+        // when
+
+        // then
+        assertEquals(4, fileCabinet.count());
+    }
+
+    @Test
+    void test_counting_folders_single_file_folders_and_multiple_folder() {
+        // given
+        Folder file1 = new SingleFileFolder("dummyFile1", "SMALL");
+        Folder file2 = new SingleFileFolder("dummyFile2", "MEDIUM");
+        Folder file3 = new SingleFileFolder("dummyFile2", "MEDIUM");
+        Folder file4 = new SingleFileFolder("dummyFile2", "LARGE");
+        MultiFileFolder multiFileFolder = new MultiFileFolder("dummyMultiFolder", "LARGE", List.of(file1, file2, file3, file4));
+
+        FileCabinet fileCabinet = new FileCabinet(List.of(multiFileFolder));
+        // when
+
+        // then
+        assertEquals(5, fileCabinet.count());
+    }
+
+
+    @Test
+    void emptyCabinet_hasZeroCountAndReturnsEmptyForSearches(){
+        // given
+        FileCabinet empty = new FileCabinet(List.of());
+
+        // when
+
+        // then
+        assertEquals(0, empty.count());
+        assertTrue(empty.findFolderByName("Any").isEmpty());
+        assertTrue(empty.findFoldersBySize("SMALL").isEmpty());
+    }
+
+    @Test
+    void testCount() {
+        Folder file1 = new SingleFileFolder("File1", "SMALL");
+        Folder file2 = new SingleFileFolder("File2", "MEDIUM");
+        MultiFolder multi = new MultiFileFolder("Folder1", "LARGE", List.of(file1, file2));
+        FileCabinet cabinet = new FileCabinet(List.of(multi));
+        assertEquals(3, cabinet.count());
+    }
+}
