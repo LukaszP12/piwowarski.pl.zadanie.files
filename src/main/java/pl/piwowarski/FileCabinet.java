@@ -13,13 +13,33 @@ class FileCabinet implements Cabinet {
     @Override
     public Optional<Folder> findFolderByName(String name) {
         if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Folder name must not be null or blank");
+            throw new IllegalArgumentException("Folder size must be valid, it cannot be null or blank");
         }
 
         return folders.stream()
                 .flatMap(folder -> getSubtreeFolders(folder).stream())
                 .filter(f -> f.getName().equals(name))
                 .findFirst();
+    }
+
+    @Override
+    public List<Folder> findFoldersBySize(String size) {
+        if (size == null || size.isBlank()) {
+            throw new IllegalArgumentException("Folder size must be valid, it cannot be null or blank");
+        }
+
+        final FolderSize folderSize;
+        try {
+            folderSize = FolderSize.valueOf(size);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid folder size type: " + size +
+                    ". It must be one of corresponding types SMALL/MEDIUM/LARGE.");
+        }
+
+        return folders.stream()
+                .flatMap(folder -> getSubtreeFolders(folder).stream())
+                .filter(folder -> FolderSize.valueOf(folder.getSize()) == folderSize)
+                .toList();
     }
 
 }
