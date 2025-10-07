@@ -168,4 +168,16 @@ class FileCabinetTest {
         assertThrows(IllegalArgumentException.class, () -> fileCabinet.findFolderByName(null));
         assertThrows(IllegalArgumentException.class, () -> fileCabinet.findFolderByName(""));
     }
+
+    @Test
+    void testing_finding_folder_by_size_when_given_invalid_inputs(){
+        // given
+        FileCabinet fileCabinet = new FileCabinet(List.of());
+        // when
+
+        // then
+        assertThrows(IllegalArgumentException.class, () -> fileCabinet.findFoldersBySize(null));
+        assertThrows(IllegalArgumentException.class, () -> fileCabinet.findFoldersBySize(""));
+        assertThrows(IllegalArgumentException.class, () -> fileCabinet.findFoldersBySize("EXTREMELY LARGE"));
+    }
 }
