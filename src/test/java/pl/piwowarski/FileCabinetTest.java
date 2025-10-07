@@ -194,4 +194,19 @@ class FileCabinetTest {
         assertTrue(fileCabinet.findFoldersBySize("LARGE").contains(anEmptyFolder));
         assertTrue(fileCabinet.findFolderByName("EmptyFolder").isPresent());
     }
+
+    // I should verify that FolderSize.valueOf()
+    // as well as corresponding name lookups are both case-sensitive.
+    @Test
+    void testing_if_Case_Sensitivity_is_handled_correctly(){
+        // given
+        SingleFileFolder folder1 = new SingleFileFolder("File1", "MEDIUM");
+        FileCabinet fileCabinet = new FileCabinet(List.of(folder1));
+        // when
+
+        // then
+        assertThrows(IllegalArgumentException.class,() -> fileCabinet.findFoldersBySize("medium"));
+        assertTrue(fileCabinet.findFolderByName("file1").isEmpty());
+    }
 }
+
