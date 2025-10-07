@@ -122,4 +122,17 @@ class FileCabinetTest {
         FileCabinet cabinet = new FileCabinet(List.of(multi));
         assertEquals(3, cabinet.count());
     }
+
+    @Test
+    void testing_if_nested_folders_are_counted_correctly_when_traversed(){
+        Folder file1 = new SingleFileFolder("File1", "SMALL");
+        Folder file2 = new SingleFileFolder("File2", "MEDIUM");
+        Folder file3 = new SingleFileFolder("File3", "MEDIUM");
+        MultiFileFolder file4 = new MultiFileFolder("File4", "LARGE", List.of(file1, file2,file3));
+        MultiFileFolder baseFolder = new MultiFileFolder("baseRoot", "LARGE", List.of(file4));
+
+        FileCabinet fileCabinet = new FileCabinet(List.of(baseFolder));
+
+        assertEquals(5,fileCabinet.count());
+    }
 }
