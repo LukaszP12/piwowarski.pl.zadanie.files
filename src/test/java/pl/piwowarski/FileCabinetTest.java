@@ -180,4 +180,18 @@ class FileCabinetTest {
         assertThrows(IllegalArgumentException.class, () -> fileCabinet.findFoldersBySize(""));
         assertThrows(IllegalArgumentException.class, () -> fileCabinet.findFoldersBySize("EXTREMELY LARGE"));
     }
+
+    @Test
+    void testing_empty_multi_folder(){
+        // given
+        MultiFileFolder anEmptyFolder = new MultiFileFolder("EmptyFolder", "LARGE", List.of());
+        FileCabinet fileCabinet = new FileCabinet(List.of(anEmptyFolder));
+
+        // when
+
+        // then
+        assertEquals(1,fileCabinet.count());
+        assertTrue(fileCabinet.findFoldersBySize("LARGE").contains(anEmptyFolder));
+        assertTrue(fileCabinet.findFolderByName("EmptyFolder").isPresent());
+    }
 }
