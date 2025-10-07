@@ -8,7 +8,10 @@ class FileCabinet implements Cabinet {
     private List<Folder> folders;
 
     public FileCabinet(List<Folder> folders) {
-        this.folders = folders;
+        if (folders == null) {
+            throw new IllegalArgumentException("Folder list cannot be null");
+        }
+        this.folders = List.copyOf(folders);
     }
 
     @Override
