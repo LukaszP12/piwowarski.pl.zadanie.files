@@ -55,13 +55,13 @@ class FileCabinet implements Cabinet {
     }
 
     private List<Folder> getSubtreeFolders(Folder folder) {
-        List<Folder> all = new ArrayList<>();
-        all.add(folder);
+        List<Folder> allFolders = new ArrayList<>();
+        allFolders.add(folder);
         if (folder instanceof MultiFolder) {
             for (Folder sub : ((MultiFolder) folder).getFolders()) {
-                all.addAll(getSubtreeFolders(sub));
+                allFolders.addAll(getSubtreeFolders(sub));
             }
         }
-        return all;
+        return allFolders;
     }
 }

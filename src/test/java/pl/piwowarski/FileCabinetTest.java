@@ -71,6 +71,8 @@ class FileCabinetTest {
 
         // when
         List<Folder> largeSizeFolders = fileCabinet.findFoldersBySize("LARGE");
+
+        // then
         assertEquals(1, largeSizeFolders.size());
         assertEquals("dummyFolder1", largeSizeFolders.get(0).getName());
     }
@@ -136,7 +138,7 @@ class FileCabinetTest {
 
     @Test
     void testing_if_nested_folders_are_counted_correctly_when_traversed(){
-        // then
+        // given
         Folder folder1 = new SingleFileFolder("File1", "SMALL");
         Folder folder2 = new SingleFileFolder("File2", "MEDIUM");
         Folder folder3 = new SingleFileFolder("File3", "MEDIUM");
@@ -146,7 +148,7 @@ class FileCabinetTest {
         // when
         FileCabinet fileCabinet = new FileCabinet(List.of(baseFolder));
 
-        // given
+        // then
         assertEquals(5,fileCabinet.count());
     }
 
@@ -155,11 +157,12 @@ class FileCabinetTest {
         // given
         Folder folder1 = new SingleFileFolder("Duplicated", "SMALL");
         Folder folder2 = new SingleFileFolder("Duplicated", "MEDIUM");
-        // when
         FileCabinet fileCabinet = new FileCabinet(List.of(folder1, folder2));
 
-        // then
+        // when
         Optional<Folder> retrievedFile = fileCabinet.findFolderByName("Duplicated");
+
+        // then
         assertTrue(retrievedFile.isPresent());
     }
 
@@ -207,11 +210,10 @@ class FileCabinetTest {
         // given
         SingleFileFolder folder1 = new SingleFileFolder("File1", "MEDIUM");
         FileCabinet fileCabinet = new FileCabinet(List.of(folder1));
-        // when
+        // when & then
+        assertThrows(IllegalArgumentException.class,() -> fileCabinet.findFoldersBySize("medium"));
 
         // then
-        assertThrows(IllegalArgumentException.class,() -> fileCabinet.findFoldersBySize("medium"));
         assertTrue(fileCabinet.findFolderByName("file1").isEmpty());
     }
 }
-
