@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -87,11 +88,11 @@ class FileCabinetTest {
     @Test
     void test_counting_folders_single_file_folders_and_multiple_folder() {
         // given
-        Folder file1 = new SingleFileFolder("dummyFile1", "SMALL");
-        Folder file2 = new SingleFileFolder("dummyFile2", "MEDIUM");
-        Folder file3 = new SingleFileFolder("dummyFile2", "MEDIUM");
-        Folder file4 = new SingleFileFolder("dummyFile2", "LARGE");
-        MultiFileFolder multiFileFolder = new MultiFileFolder("dummyMultiFolder", "LARGE", List.of(file1, file2, file3, file4));
+        Folder folder1 = new SingleFileFolder("dummyFile1", "SMALL");
+        Folder folder2 = new SingleFileFolder("dummyFile2", "MEDIUM");
+        Folder folder3 = new SingleFileFolder("dummyFile2", "MEDIUM");
+        Folder folder4 = new SingleFileFolder("dummyFile2", "LARGE");
+        MultiFileFolder multiFileFolder = new MultiFileFolder("dummyMultiFolder", "LARGE", List.of(folder1, folder2, folder3, folder4));
 
         FileCabinet fileCabinet = new FileCabinet(List.of(multiFileFolder));
         // when
@@ -116,23 +117,55 @@ class FileCabinetTest {
 
     @Test
     void testCount() {
-        Folder file1 = new SingleFileFolder("File1", "SMALL");
-        Folder file2 = new SingleFileFolder("File2", "MEDIUM");
-        MultiFolder multi = new MultiFileFolder("Folder1", "LARGE", List.of(file1, file2));
+        // given
+        Folder folder1 = new SingleFileFolder("File1", "SMALL");
+        Folder folder2 = new SingleFileFolder("File2", "MEDIUM");
+        MultiFolder multi = new MultiFileFolder("Folder1", "LARGE", List.of(folder1, folder2));
+
+        // when
         FileCabinet cabinet = new FileCabinet(List.of(multi));
+
+        // then
         assertEquals(3, cabinet.count());
     }
 
     @Test
     void testing_if_nested_folders_are_counted_correctly_when_traversed(){
-        Folder file1 = new SingleFileFolder("File1", "SMALL");
-        Folder file2 = new SingleFileFolder("File2", "MEDIUM");
-        Folder file3 = new SingleFileFolder("File3", "MEDIUM");
-        MultiFileFolder file4 = new MultiFileFolder("File4", "LARGE", List.of(file1, file2,file3));
-        MultiFileFolder baseFolder = new MultiFileFolder("baseRoot", "LARGE", List.of(file4));
+        // then
+        Folder folder1 = new SingleFileFolder("File1", "SMALL");
+        Folder folder2 = new SingleFileFolder("File2", "MEDIUM");
+        Folder folder3 = new SingleFileFolder("File3", "MEDIUM");
+        MultiFileFolder folder4 = new MultiFileFolder("File4", "LARGE", List.of(folder1, folder2,folder3));
+        MultiFileFolder baseFolder = new MultiFileFolder("baseRoot", "LARGE", List.of(folder4));
 
+        // when
         FileCabinet fileCabinet = new FileCabinet(List.of(baseFolder));
 
+        // given
         assertEquals(5,fileCabinet.count());
+    }
+
+    @Test
+    void testing_finding_folders_with_duplicate_names(){
+        // given
+        Folder folder1 = new SingleFileFolder("Duplicated", "SMALL");
+        Folder folder2 = new SingleFileFolder("Duplicated", "MEDIUM");
+        // when
+        FileCabinet fileCabinet = new FileCabinet(List.of(folder1, folder2));
+
+        // then
+        Optional<Folder> retrievedFile = fileCabinet.findFolderByName("Duplicated");
+        assertTrue(retrievedFile.isPresent());
+    }
+
+    @Test
+    void testing_finding_folder_by_name_when_given_invalid_inputs(){
+        // given
+        FileCabinet fileCabinet = new FileCabinet(List.of());
+        // when
+
+        // then
+        assertThrows(IllegalArgumentException.class, () -> fileCabinet.findFolderByName(null));
+        assertThrows(IllegalArgumentException.class, () -> fileCabinet.findFolderByName(""));
     }
 }
