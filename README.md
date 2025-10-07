@@ -1,0 +1,21 @@
+# File Cabinet Traversor
+Zadanie w Javie implementujące strukturę katalogów z uwzględnieniem obsługi folderów zagnieżdżonych.
+
+## Opis implementacji
+
+`FileCabinet` implementuje interfejs `Cabinet` i umożliwia:  
+
+- wyszukiwanie folderów po nazwie (`findFolderByName`)  - w specyfikacji zadania metoda zwraca Optional<Folder> wieć wiadomo że chodzi o pojedyńcza wartość, która może być albo nie być
+- wyszukiwanie folderów po rozmiarze (`findFoldersBySize`)  - tutaj prawidłowej wartości są ograniczone do SMALL/MEDIUM/LARGE więc tworzymy pomocniczego enum które implementuje ta weryfikacje
+- zliczanie wszystkich folderów w strukturze (`count`)  
+
+Obsługiwane są foldery pojedyncze (`Folder`) i wielopoziomowe (`MultiFolder`).
+
+metody korzystają z pomocniczej metody getSubtreeFolders() która zlicza foldery w sposób rekurencyjny i zwraca ich listę
+
+## Struktura
+
+- `Folder` – reprezentacja interfejsowa pojedynczego folderu  
+- `MultiFolder` – reprezentacja interfejsowa wielokrotnego folderu  
+- `Cabinet` – interfejs główny z metodami operującymi na folderach  
+- `FileCabinet` – klasa implementująca `Cabinet`  
