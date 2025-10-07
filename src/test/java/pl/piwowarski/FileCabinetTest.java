@@ -13,6 +13,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class FileCabinetTest {
 
     @Test
+    void should_throw_exception_if_input_list_is_null() {
+        assertThrows(IllegalArgumentException.class, () -> new FileCabinet(null));
+    }
+
+    @Test
     void findFolderByName_an_exisiting_folder() {
         // given
         Folder file1 = new SingleFileFolder("File1", "SMALL");
