@@ -159,12 +159,12 @@ class FileCabinetTest {
         Folder folder2 = new SingleFileFolder("File2", "MEDIUM");
         Folder folder3 = new SingleFileFolder("File3", "MEDIUM");
 
-        Folder folder6 = new SingleFileFolder("File1", "SMALL");
+        Folder folder6 = new SingleFileFolder("File4", "SMALL");
         Folder folder5 = new MultiFileFolder("File5", "LARGE",List.of(folder6));
 
-        MultiFileFolder folder4 = new MultiFileFolder("File4", "LARGE", List.of(folder1, folder2,folder3,folder5));
+        MultiFileFolder folder4 = new MultiFileFolder("MultiFileFolder1", "LARGE", List.of(folder1, folder2,folder3,folder5));
 
-        MultiFileFolder baseFolder = new MultiFileFolder("baseRoot", "LARGE", List.of(folder4));
+        MultiFileFolder baseFolder = new MultiFileFolder("baseRootFolder", "LARGE", List.of(folder4));
 
         // when
         FileCabinet fileCabinet = new FileCabinet(List.of(baseFolder));
