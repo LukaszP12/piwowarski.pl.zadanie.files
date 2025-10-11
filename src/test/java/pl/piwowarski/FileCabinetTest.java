@@ -153,6 +153,27 @@ class FileCabinetTest {
     }
 
     @Test
+    void testing_if_nested_folders_are_counted_correctly_when_traversed_more_levels(){
+        // given
+        Folder folder1 = new SingleFileFolder("File1", "SMALL");
+        Folder folder2 = new SingleFileFolder("File2", "MEDIUM");
+        Folder folder3 = new SingleFileFolder("File3", "MEDIUM");
+
+        Folder folder6 = new SingleFileFolder("File1", "SMALL");
+        Folder folder5 = new MultiFileFolder("File5", "LARGE",List.of(folder6));
+
+        MultiFileFolder folder4 = new MultiFileFolder("File4", "LARGE", List.of(folder1, folder2,folder3,folder5));
+
+        MultiFileFolder baseFolder = new MultiFileFolder("baseRoot", "LARGE", List.of(folder4));
+
+        // when
+        FileCabinet fileCabinet = new FileCabinet(List.of(baseFolder));
+
+        // then
+        assertEquals(7,fileCabinet.count());
+    }
+
+    @Test
     void testing_finding_folders_with_duplicate_names(){
         // given
         Folder folder1 = new SingleFileFolder("Duplicated", "SMALL");
