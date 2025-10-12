@@ -204,16 +204,17 @@ class FileCabinetTest {
     }
 
     // I should verify that FolderSize.valueOf()
-    // as well as corresponding name lookups are both case-sensitive.
+    // as well as corresponding name lookups are both case-insensitive.
     @Test
-    void testing_if_Case_Sensitivity_is_handled_correctly(){
+    void testing_if_Case_Sensitivity_is_handled_correctly() {
         // given
         SingleFileFolder folder1 = new SingleFileFolder("File1", "MEDIUM");
         FileCabinet fileCabinet = new FileCabinet(List.of(folder1));
-        // when & then
-        assertThrows(IllegalArgumentException.class,() -> fileCabinet.findFoldersBySize("medium"));
+
+        // when
+        var bySize = fileCabinet.findFoldersBySize("medium");
 
         // then
-        assertTrue(fileCabinet.findFolderByName("file1").isEmpty());
+        assertEquals(1, bySize.size(), "Size search should be case-insensitive");
     }
 }

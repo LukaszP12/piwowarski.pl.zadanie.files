@@ -2,6 +2,7 @@ package pl.piwowarski;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 class FileCabinet implements Cabinet {
@@ -34,7 +35,7 @@ class FileCabinet implements Cabinet {
 
         final FolderSize folderSize;
         try {
-            folderSize = FolderSize.valueOf(size);
+            folderSize = FolderSize.valueOf(size.toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid folder size type: " + size +
                     ". It must be one of corresponding types SMALL/MEDIUM/LARGE.");
@@ -42,7 +43,7 @@ class FileCabinet implements Cabinet {
 
         return folders.stream()
                 .flatMap(folder -> getSubtreeFolders(folder).stream())
-                .filter(folder -> FolderSize.valueOf(folder.getSize()) == folderSize)
+                .filter(folder -> folderSize.name().equalsIgnoreCase(folder.getSize()))
                 .toList();
     }
 
