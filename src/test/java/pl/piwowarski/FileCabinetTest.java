@@ -3,8 +3,11 @@ package pl.piwowarski;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -127,13 +130,53 @@ class FileCabinetTest {
         // given
         Folder folder1 = new SingleFileFolder("File1", "SMALL");
         Folder folder2 = new SingleFileFolder("File2", "MEDIUM");
-        MultiFolder multi = new MultiFileFolder("Folder1", "LARGE", List.of(folder1, folder2));
+        MultiFolder multi = new MultiFileFolder("Folder1", "LARGE", List.of(folder1,folder2));
 
         // when
         FileCabinet cabinet = new FileCabinet(List.of(multi));
 
         // then
         assertEquals(3, cabinet.count());
+    }
+
+    @Test
+    void testCount_nulls_should_filtered() {
+        // given
+        Folder folder1 = new SingleFileFolder("File1", "SMALL");
+        Folder folder2 = new SingleFileFolder("File2", "MEDIUM");
+
+        List<Folder> list = Arrays.asList(folder1, null, folder2, null);
+        MultiFolder multi = new MultiFileFolder("Folder1", "LARGE", list);
+
+
+        // when
+        FileCabinet cabinet = new FileCabinet(List.of(multi));
+
+        // then
+        assertEquals(3, cabinet.count());
+    }
+
+    @Test
+    void testCount_nulls_shoul_be_filtered_nested() {
+        // given
+
+        // root level folders
+        Folder folder1 = new SingleFileFolder("File1", "SMALL");
+        Folder folder2 = new SingleFileFolder("File2", "MEDIUM");
+
+        // nested level
+        Folder folder3 = new SingleFileFolder("File3", "SMALL");
+        List<Folder> list2 = Arrays.asList(folder3,null,null);
+        MultiFileFolder nestedMultiFileFolder = new MultiFileFolder("2 level", "LARGE", list2);
+
+        List<Folder> list = Arrays.asList(folder1, null, folder2, null,nestedMultiFileFolder);
+        MultiFolder root = new MultiFileFolder("Folder1", "LARGE", list);
+
+        // when
+        FileCabinet cabinet = new FileCabinet(List.of(root));
+
+        // then
+        assertEquals(5, cabinet.count());
     }
 
     @Test
