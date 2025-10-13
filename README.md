@@ -6,7 +6,7 @@ Zadanie w Javie implementujące strukturę katalogów z uwzględnieniem obsługi
 `FileCabinet` implementuje interfejs `Cabinet` i umożliwia:  
 
 - wyszukiwanie folderów po nazwie (`findFolderByName`)  - w specyfikacji zadania metoda zwraca Optional<Folder> wieć wiadomo że chodzi o pojedyńcza wartość, która może być albo nie być nie musi rzucać wyjątku RuntimeException. 
-  Przy wyszukiwania jest to normalne że pliku o jakiejs nazwie moze nie byc i użytkownik będzie chciał od razu wyszukać ponownie.
+  Przy wyszukiwania jest to normalne że pliku o jakiejs nazwie może nie być i użytkownik będzie chciał od razu wyszukać ponownie.
   Nie ma potrzeby, aby metoda rzucała RuntimeException w przypadku, gdy folder o podanej nazwie nie został znaleziony.
   Brak wyniku w wyszukiwaniu jest sytuacją całkowicie normalną — użytkownik może po prostu spróbować ponownie lub wyszukać inną nazwę.
 
