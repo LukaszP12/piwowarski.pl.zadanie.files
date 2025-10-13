@@ -3,6 +3,7 @@ package pl.piwowarski;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 
 class FileCabinet implements Cabinet {
@@ -12,7 +13,9 @@ class FileCabinet implements Cabinet {
         if (folders == null) {
             throw new IllegalArgumentException("Folder list cannot be null");
         }
-        this.folders = List.copyOf(folders);
+        this.folders = List.copyOf(folders.stream()
+                .filter(Objects::nonNull)
+                .toList());
     }
 
     @Override
