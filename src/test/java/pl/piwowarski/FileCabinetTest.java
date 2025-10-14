@@ -155,7 +155,7 @@ class FileCabinetTest {
     }
 
     @Test
-    void testCount_nulls_shoul_be_filtered_nested() {
+    void testCount_nulls_should_be_filtered_nested() {
         // given
 
         // root level folders

@@ -25,7 +25,7 @@ class FileCabinet implements Cabinet {
         }
 
         return folders.stream()
-                .flatMap(folder -> getSubtreeFolders(folder).stream())
+                .flatMap(folder -> getSubFolders(folder).stream())
                 .filter(f -> f.getName().equals(name))
                 .findFirst();
     }
@@ -45,7 +45,7 @@ class FileCabinet implements Cabinet {
         }
 
         return folders.stream()
-                .flatMap(folder -> getSubtreeFolders(folder).stream())
+                .flatMap(folder -> getSubFolders(folder).stream())
                 .filter(folder -> folderSize.name().equalsIgnoreCase(folder.getSize()))
                 .toList();
     }
@@ -53,17 +53,17 @@ class FileCabinet implements Cabinet {
     @Override
     public int count() {
         return folders.stream()
-                .flatMap(folder -> getSubtreeFolders(folder).stream())
+                .flatMap(folder -> getSubFolders(folder).stream())
                 .mapToInt(countingFolder -> 1)
                 .sum();
     }
 
-    private List<Folder> getSubtreeFolders(Folder folder) {
+    private List<Folder> getSubFolders(Folder folder) {
         List<Folder> allFolders = new ArrayList<>();
         allFolders.add(folder);
         if (folder instanceof MultiFolder) {
             for (Folder sub : ((MultiFolder) folder).getFolders()) {
-                allFolders.addAll(getSubtreeFolders(sub));
+                allFolders.addAll(getSubFolders(sub));
             }
         }
         return allFolders;
