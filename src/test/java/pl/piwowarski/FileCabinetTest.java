@@ -5,9 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -196,6 +194,20 @@ class FileCabinetTest {
     }
 
     @Test
+    void findFolderByName_handlesNullSubfolders(){
+        // given
+        MultiFileFolder anEmptyFolder = new MultiFileFolder("dummyFolder1", "LARGE", null);
+
+        // when
+        FileCabinet fileCabinet = new FileCabinet(List.of(anEmptyFolder));
+        Optional<Folder> searchedFolder = fileCabinet.findFolderByName("dummyFolder1");
+
+        // then
+        assertTrue(searchedFolder.isPresent());
+        assertEquals("dummyFolder1",searchedFolder.get().getName());
+    }
+
+    @Test
     void testing_finding_folders_with_duplicate_names(){
         // given
         Folder folder1 = new SingleFileFolder("Duplicated", "SMALL");
@@ -207,7 +219,6 @@ class FileCabinetTest {
 
         // then
         assertTrue(retrievedFile.isPresent());
-        System.out.println(retrievedFile.get().getSize());
     }
 
     @Test

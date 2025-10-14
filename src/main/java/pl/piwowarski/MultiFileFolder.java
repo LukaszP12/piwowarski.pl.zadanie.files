@@ -13,8 +13,7 @@ class MultiFileFolder extends SingleFileFolder implements MultiFolder {
         } else {
             this.folders = folders.stream()
                     .filter(Objects::nonNull)
-                    .toList()
-            ;
+                    .toList();
         }
     }
 
