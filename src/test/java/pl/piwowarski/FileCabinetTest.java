@@ -19,7 +19,7 @@ class FileCabinetTest {
     }
 
     @Test
-    void findFolderByName_an_exisiting_folder() {
+    void findFolderByName_returnsExistingFolder() {
         // given
         Folder file1 = new SingleFileFolder("File1", "SMALL");
         Folder file2 = new SingleFileFolder("File2", "MEDIUM");
@@ -34,7 +34,7 @@ class FileCabinetTest {
     }
 
     @Test
-    void findFolderByName_a_nonExistingFolder() {
+    void findFolderByName_returnsEmptyForNonExistingFolder() {
         // given
         SingleFileFolder singleFileFolder = new SingleFileFolder("dummyFile1", "SMALL");
         FileCabinet fileCabinet = new FileCabinet(List.of(singleFileFolder));
@@ -63,7 +63,7 @@ class FileCabinetTest {
     }
 
     @Test
-    void find_aMultiFolder_By_Size_Polymorphic() {
+    void findMultiFileFolderBySize_polymorphic() {
         // given
         Folder file1 = new SingleFileFolder("dummyFile1", "SMALL");
         Folder file2 = new SingleFileFolder("dummyFile2", "MEDIUM");
@@ -128,7 +128,7 @@ class FileCabinetTest {
         // given
         Folder folder1 = new SingleFileFolder("File1", "SMALL");
         Folder folder2 = new SingleFileFolder("File2", "MEDIUM");
-        MultiFolder multi = new MultiFileFolder("Folder1", "LARGE", List.of(folder1,folder2));
+        MultiFileFolder multi = new MultiFileFolder("Folder1", "LARGE", List.of(folder1,folder2));
 
         // when
         FileCabinet cabinet = new FileCabinet(List.of(multi));
@@ -178,7 +178,7 @@ class FileCabinetTest {
     }
 
     @Test
-    void testing_if_nested_folders_are_counted_correctly_when_traversed(){
+    void shouldCountNestedFoldersRecursively(){
         // given
         Folder folder1 = new SingleFileFolder("File1", "SMALL");
         Folder folder2 = new SingleFileFolder("File2", "MEDIUM");
