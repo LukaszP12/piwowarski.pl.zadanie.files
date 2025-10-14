@@ -286,4 +286,15 @@ class FileCabinetTest {
         assertTrue(resultMatchingCase.isPresent(),"A matching file should be found");
         assertTrue(resultLoweredCase.isEmpty(),"searching is case sensitive");
     }
+
+    @Test
+    void should_not_throwStackOverflow_many_levels_of_nestedFolders() {
+        Folder root = new SingleFileFolder("Root", "SMALL");
+        Folder nestedLevel = root;
+        for (int i = 0; i < 1500; i++) {
+            nestedLevel = new MultiFileFolder("Level" + i, "LARGE", List.of(nestedLevel));
+        }
+        FileCabinet cabinet = new FileCabinet(List.of(nestedLevel));
+        assertEquals(1501, cabinet.count());
+    }
 }
