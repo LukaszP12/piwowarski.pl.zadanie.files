@@ -1,5 +1,6 @@
 # File Cabinet Traversor
 Zadanie w Javie implementujące strukturę katalogów z uwzględnieniem obsługi folderów zagnieżdżonych.
+Zgodnie z wytycznymi FileCabinet ma charakter read-only należy umożliwić wyszukania po nazwie folderu, rozmiarze oraz zliczenie folderów. 
 
 ## Opis implementacji
 
