@@ -17,7 +17,7 @@ Zadanie w Javie implementujące strukturę katalogów z uwzględnieniem obsługi
 
 Obsługiwane są foldery pojedyncze (`Folder`) i wielopoziomowe (`MultiFolder`).
 
-metody korzystają z pomocniczej metody getSubtreeFolders() która zlicza foldery w sposób rekurencyjny i zwraca ich listę
+metody korzystają z pomocniczej metody getSubFolders() która zlicza foldery w sposób rekurencyjny i zwraca ich listę
 
 ## Struktura
 
