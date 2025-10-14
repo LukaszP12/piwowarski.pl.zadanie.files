@@ -19,6 +19,42 @@ class FileCabinetTest {
     }
 
     @Test
+    void emptyCabinet_hasZeroCountAndReturnsEmptyForSearches(){
+        // given
+        FileCabinet empty = new FileCabinet(List.of());
+
+        // when
+
+        // then
+        assertEquals(0, empty.count());
+        assertTrue(empty.findFolderByName("Any").isEmpty());
+        assertTrue(empty.findFoldersBySize("SMALL").isEmpty());
+    }
+
+    @Test
+    void testing_finding_folder_by_name_when_given_invalid_inputs(){
+        // given
+        FileCabinet fileCabinet = new FileCabinet(List.of());
+        // when
+
+        // then
+        assertThrows(IllegalArgumentException.class, () -> fileCabinet.findFolderByName(null));
+        assertThrows(IllegalArgumentException.class, () -> fileCabinet.findFolderByName(""));
+    }
+
+    @Test
+    void testing_finding_folder_by_size_when_given_invalid_inputs(){
+        // given
+        FileCabinet fileCabinet = new FileCabinet(List.of());
+        // when
+
+        // then
+        assertThrows(IllegalArgumentException.class, () -> fileCabinet.findFoldersBySize(null));
+        assertThrows(IllegalArgumentException.class, () -> fileCabinet.findFoldersBySize(""));
+        assertThrows(IllegalArgumentException.class, () -> fileCabinet.findFoldersBySize("EXTREMELY LARGE"));
+    }
+
+    @Test
     void findFolderByName_returnsExistingFolder() {
         // given
         Folder file1 = new SingleFileFolder("File1", "SMALL");
@@ -44,6 +80,48 @@ class FileCabinetTest {
 
         // then
         assertTrue(notPresent.isEmpty());
+    }
+
+    @Test
+    void findFolderByName_handlesNullSubfolders(){
+        // given
+        MultiFileFolder anEmptyFolder = new MultiFileFolder("dummyFolder1", "LARGE", null);
+
+        // when
+        FileCabinet fileCabinet = new FileCabinet(List.of(anEmptyFolder));
+        Optional<Folder> searchedFolder = fileCabinet.findFolderByName("dummyFolder1");
+
+        // then
+        assertTrue(searchedFolder.isPresent());
+        assertEquals("dummyFolder1",searchedFolder.get().getName());
+    }
+
+    @Test
+    void testing_finding_folders_with_duplicate_names(){
+        // given
+        Folder folder1 = new SingleFileFolder("Duplicated", "SMALL");
+        Folder folder2 = new SingleFileFolder("Duplicated", "MEDIUM");
+        FileCabinet fileCabinet = new FileCabinet(List.of(folder1, folder2));
+
+        // when
+        Optional<Folder> retrievedFile = fileCabinet.findFolderByName("Duplicated");
+
+        // then
+        assertTrue(retrievedFile.isPresent());
+    }
+
+    @Test
+    void searching_by_name_should_be_case_sensitive() {
+        // given
+        SingleFileFolder folder = new SingleFileFolder("FileFolder1", "MEDIUM");
+        FileCabinet fileCabinet = new FileCabinet(List.of(folder));
+
+        // when
+        Optional<Folder> resultMatchingCase = fileCabinet.findFolderByName("FileFolder1");
+        Optional<Folder> resultLoweredCase = fileCabinet.findFolderByName("filefolder1");
+        // then
+        assertTrue(resultMatchingCase.isPresent(),"A matching file should be found");
+        assertTrue(resultLoweredCase.isEmpty(),"searching is case sensitive");
     }
 
     @Test
@@ -107,20 +185,6 @@ class FileCabinetTest {
 
         // then
         assertEquals(5, fileCabinet.count());
-    }
-
-
-    @Test
-    void emptyCabinet_hasZeroCountAndReturnsEmptyForSearches(){
-        // given
-        FileCabinet empty = new FileCabinet(List.of());
-
-        // when
-
-        // then
-        assertEquals(0, empty.count());
-        assertTrue(empty.findFolderByName("Any").isEmpty());
-        assertTrue(empty.findFoldersBySize("SMALL").isEmpty());
     }
 
     @Test
@@ -194,57 +258,6 @@ class FileCabinetTest {
     }
 
     @Test
-    void findFolderByName_handlesNullSubfolders(){
-        // given
-        MultiFileFolder anEmptyFolder = new MultiFileFolder("dummyFolder1", "LARGE", null);
-
-        // when
-        FileCabinet fileCabinet = new FileCabinet(List.of(anEmptyFolder));
-        Optional<Folder> searchedFolder = fileCabinet.findFolderByName("dummyFolder1");
-
-        // then
-        assertTrue(searchedFolder.isPresent());
-        assertEquals("dummyFolder1",searchedFolder.get().getName());
-    }
-
-    @Test
-    void testing_finding_folders_with_duplicate_names(){
-        // given
-        Folder folder1 = new SingleFileFolder("Duplicated", "SMALL");
-        Folder folder2 = new SingleFileFolder("Duplicated", "MEDIUM");
-        FileCabinet fileCabinet = new FileCabinet(List.of(folder1, folder2));
-
-        // when
-        Optional<Folder> retrievedFile = fileCabinet.findFolderByName("Duplicated");
-
-        // then
-        assertTrue(retrievedFile.isPresent());
-    }
-
-    @Test
-    void testing_finding_folder_by_name_when_given_invalid_inputs(){
-        // given
-        FileCabinet fileCabinet = new FileCabinet(List.of());
-        // when
-
-        // then
-        assertThrows(IllegalArgumentException.class, () -> fileCabinet.findFolderByName(null));
-        assertThrows(IllegalArgumentException.class, () -> fileCabinet.findFolderByName(""));
-    }
-
-    @Test
-    void testing_finding_folder_by_size_when_given_invalid_inputs(){
-        // given
-        FileCabinet fileCabinet = new FileCabinet(List.of());
-        // when
-
-        // then
-        assertThrows(IllegalArgumentException.class, () -> fileCabinet.findFoldersBySize(null));
-        assertThrows(IllegalArgumentException.class, () -> fileCabinet.findFoldersBySize(""));
-        assertThrows(IllegalArgumentException.class, () -> fileCabinet.findFoldersBySize("EXTREMELY LARGE"));
-    }
-
-    @Test
     void testing_empty_multi_folder(){
         // given
         MultiFileFolder anEmptyFolder = new MultiFileFolder("EmptyFolder", "LARGE", List.of());
@@ -271,20 +284,6 @@ class FileCabinetTest {
 
         // then
         assertEquals(1, bySize.size(), "Size search should be case-insensitive");
-    }
-
-    @Test
-    void searching_by_name_should_be_case_sensitive() {
-        // given
-        SingleFileFolder folder = new SingleFileFolder("FileFolder1", "MEDIUM");
-        FileCabinet fileCabinet = new FileCabinet(List.of(folder));
-
-        // when
-        Optional<Folder> resultMatchingCase = fileCabinet.findFolderByName("FileFolder1");
-        Optional<Folder> resultLoweredCase = fileCabinet.findFolderByName("filefolder1");
-        // then
-        assertTrue(resultMatchingCase.isPresent(),"A matching file should be found");
-        assertTrue(resultLoweredCase.isEmpty(),"searching is case sensitive");
     }
 
     @Test
