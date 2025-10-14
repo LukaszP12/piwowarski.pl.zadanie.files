@@ -55,7 +55,7 @@ public class FileCabinet implements Cabinet {
     public int count() {
         return folders.stream()
                 .flatMap(folder -> getSubFolders(folder).stream())
-                .mapToInt(countingFolder -> 1)
+                .mapToInt(countEachFolder -> 1)
                 .sum();
     }
 
