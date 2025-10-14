@@ -1,12 +1,13 @@
 package pl.piwowarski;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
-class FileCabinet implements Cabinet {
+public class FileCabinet implements Cabinet {
     private List<Folder> folders;
 
     public FileCabinet(List<Folder> folders) {
@@ -56,6 +57,10 @@ class FileCabinet implements Cabinet {
                 .flatMap(folder -> getSubFolders(folder).stream())
                 .mapToInt(countingFolder -> 1)
                 .sum();
+    }
+
+    public List<Folder> getFolders() {
+        return Collections.unmodifiableList(folders);
     }
 
     private List<Folder> getSubFolders(Folder folder) {

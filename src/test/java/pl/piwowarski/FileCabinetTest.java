@@ -19,7 +19,7 @@ class FileCabinetTest {
     }
 
     @Test
-    void emptyCabinet_hasZeroCountAndReturnsEmptyForSearches(){
+    void emptyCabinet_hasZeroCountAndReturnsEmptyForSearches() {
         // given
         FileCabinet empty = new FileCabinet(List.of());
 
@@ -32,7 +32,7 @@ class FileCabinetTest {
     }
 
     @Test
-    void testing_finding_folder_by_name_when_given_invalid_inputs(){
+    void testing_finding_folder_by_name_when_given_invalid_inputs() {
         // given
         FileCabinet fileCabinet = new FileCabinet(List.of());
         // when
@@ -43,7 +43,29 @@ class FileCabinetTest {
     }
 
     @Test
-    void testing_finding_folder_by_size_when_given_invalid_inputs(){
+    void getter_method_getFolders_should_always_return_a_UnmodifiableList() {
+        // given
+        Folder folder1 = new SingleFileFolder("DocumentFile1", "MEDIUM");
+        Folder folder2 = new SingleFileFolder("ImageFile1", "SMALL");
+        Folder folder3 = new SingleFileFolder("ExcelFile1", "SMALL");
+        FileCabinet fileCabinet = new FileCabinet(List.of(folder1, folder2,folder3));
+
+        // when
+        List<Folder> fetchedFolders = fileCabinet.getFolders();
+
+        // then
+        assertEquals(3, fetchedFolders.size());
+        assertEquals("DocumentFile1",fetchedFolders.get(0).getName());
+        assertEquals("ImageFile1",fetchedFolders.get(1).getName());
+        assertEquals("ExcelFile1",fetchedFolders.get(2).getName());
+
+        assertThrows(UnsupportedOperationException.class, () -> fetchedFolders.add(
+                new SingleFileFolder("FetchedFolder", "SMALL")
+        ));
+    }
+
+    @Test
+    void testing_finding_folder_by_size_when_given_invalid_inputs() {
         // given
         FileCabinet fileCabinet = new FileCabinet(List.of());
         // when
@@ -83,7 +105,7 @@ class FileCabinetTest {
     }
 
     @Test
-    void findFolderByName_handlesNullSubfolders(){
+    void findFolderByName_handlesNullSubfolders() {
         // given
         MultiFileFolder anEmptyFolder = new MultiFileFolder("dummyFolder1", "LARGE", null);
 
@@ -93,11 +115,11 @@ class FileCabinetTest {
 
         // then
         assertTrue(searchedFolder.isPresent());
-        assertEquals("dummyFolder1",searchedFolder.get().getName());
+        assertEquals("dummyFolder1", searchedFolder.get().getName());
     }
 
     @Test
-    void testing_finding_folders_with_duplicate_names(){
+    void testing_finding_folders_with_duplicate_names() {
         // given
         Folder folder1 = new SingleFileFolder("Duplicated", "SMALL");
         Folder folder2 = new SingleFileFolder("Duplicated", "MEDIUM");
@@ -120,8 +142,8 @@ class FileCabinetTest {
         Optional<Folder> resultMatchingCase = fileCabinet.findFolderByName("FileFolder1");
         Optional<Folder> resultLoweredCase = fileCabinet.findFolderByName("filefolder1");
         // then
-        assertTrue(resultMatchingCase.isPresent(),"A matching file should be found");
-        assertTrue(resultLoweredCase.isEmpty(),"searching is case sensitive");
+        assertTrue(resultMatchingCase.isPresent(), "A matching file should be found");
+        assertTrue(resultLoweredCase.isEmpty(), "searching is case sensitive");
     }
 
     @Test
@@ -192,7 +214,7 @@ class FileCabinetTest {
         // given
         Folder folder1 = new SingleFileFolder("File1", "SMALL");
         Folder folder2 = new SingleFileFolder("File2", "MEDIUM");
-        MultiFileFolder multi = new MultiFileFolder("Folder1", "LARGE", List.of(folder1,folder2));
+        MultiFileFolder multi = new MultiFileFolder("Folder1", "LARGE", List.of(folder1, folder2));
 
         // when
         FileCabinet cabinet = new FileCabinet(List.of(multi));
@@ -228,10 +250,10 @@ class FileCabinetTest {
 
         // nested level
         Folder folder3 = new SingleFileFolder("File3", "SMALL");
-        List<Folder> list2 = Arrays.asList(folder3,null,null);
+        List<Folder> list2 = Arrays.asList(folder3, null, null);
         MultiFileFolder nestedMultiFileFolder = new MultiFileFolder("2 level", "LARGE", list2);
 
-        List<Folder> list = Arrays.asList(folder1, null, folder2, null,nestedMultiFileFolder);
+        List<Folder> list = Arrays.asList(folder1, null, folder2, null, nestedMultiFileFolder);
         MultiFolder root = new MultiFileFolder("Folder1", "LARGE", list);
 
         // when
@@ -242,23 +264,23 @@ class FileCabinetTest {
     }
 
     @Test
-    void shouldCountNestedFoldersRecursively(){
+    void shouldCountNestedFoldersRecursively() {
         // given
         Folder folder1 = new SingleFileFolder("File1", "SMALL");
         Folder folder2 = new SingleFileFolder("File2", "MEDIUM");
         Folder folder3 = new SingleFileFolder("File3", "MEDIUM");
-        MultiFileFolder folder4 = new MultiFileFolder("File4", "LARGE", List.of(folder1, folder2,folder3));
+        MultiFileFolder folder4 = new MultiFileFolder("File4", "LARGE", List.of(folder1, folder2, folder3));
         MultiFileFolder baseFolder = new MultiFileFolder("baseRoot", "LARGE", List.of(folder4));
 
         // when
         FileCabinet fileCabinet = new FileCabinet(List.of(baseFolder));
 
         // then
-        assertEquals(5,fileCabinet.count());
+        assertEquals(5, fileCabinet.count());
     }
 
     @Test
-    void testing_empty_multi_folder(){
+    void testing_empty_multi_folder() {
         // given
         MultiFileFolder anEmptyFolder = new MultiFileFolder("EmptyFolder", "LARGE", List.of());
         FileCabinet fileCabinet = new FileCabinet(List.of(anEmptyFolder));
@@ -266,7 +288,7 @@ class FileCabinetTest {
         // when
 
         // then
-        assertEquals(1,fileCabinet.count());
+        assertEquals(1, fileCabinet.count());
         assertTrue(fileCabinet.findFoldersBySize("LARGE").contains(anEmptyFolder));
         assertTrue(fileCabinet.findFolderByName("EmptyFolder").isPresent());
     }
