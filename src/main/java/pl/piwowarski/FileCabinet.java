@@ -1,11 +1,10 @@
 package pl.piwowarski;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class FileCabinet implements Cabinet {
     private List<Folder> folders;
@@ -25,9 +24,8 @@ public class FileCabinet implements Cabinet {
             throw new IllegalArgumentException("Folder size must be valid, it cannot be null or blank");
         }
 
-        return folders.stream()
-                .flatMap(folder -> getSubFolders(folder).stream())
-                .filter(f -> f.getName().equals(name))
+        return getFolders()
+                .filter(folder -> name.equals(folder.getName()))
                 .findFirst();
     }
 
@@ -45,32 +43,30 @@ public class FileCabinet implements Cabinet {
                     ". It must be one of corresponding types SMALL/MEDIUM/LARGE.");
         }
 
-        return folders.stream()
-                .flatMap(folder -> getSubFolders(folder).stream())
+        return getFolders()
                 .filter(folder -> folderSize.name().equalsIgnoreCase(folder.getSize()))
                 .toList();
     }
 
     @Override
     public int count() {
-        return folders.stream()
-                .flatMap(folder -> getSubFolders(folder).stream())
-                .mapToInt(countEachFolder -> 1)
-                .sum();
+        return getFolders().mapToInt(countEachFolder -> 1).sum();
     }
 
-    public List<Folder> getFolders() {
-        return Collections.unmodifiableList(folders);
+    // streams are always not mutable I do not need Collections.unmodifiableList() any more
+    public Stream<Folder> getFolders() {
+        return folders.stream().flatMap(this::getSubFolders);
     }
 
-    private List<Folder> getSubFolders(Folder folder) {
-        List<Folder> allFolders = new ArrayList<>();
-        allFolders.add(folder);
+    private Stream<Folder> getSubFolders(Folder folder) {
+        Stream<Folder> rootFolder = Stream.of(folder);
         if (folder instanceof MultiFolder) {
-            for (Folder sub : ((MultiFolder) folder).getFolders()) {
-                allFolders.addAll(getSubFolders(sub));
-            }
+            Stream<Folder> subFolders = ((MultiFolder) folder)
+                    .getFolders()
+                    .stream()
+                    .flatMap(this::getSubFolders);
+            return Stream.concat(rootFolder, subFolders);
         }
-        return allFolders;
+        return rootFolder;
     }
 }
