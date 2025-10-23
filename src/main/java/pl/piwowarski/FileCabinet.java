@@ -53,7 +53,8 @@ public class FileCabinet implements Cabinet {
         return getFolders().mapToInt(countEachFolder -> 1).sum();
     }
 
-    // streams are always not mutable I do not need Collections.unmodifiableList() any more
+    // Stream is returned for safe iteration;
+    // the internal collection remains encapsulated and protected
     public Stream<Folder> getFolders() {
         return folders.stream().flatMap(this::getSubFolders);
     }
